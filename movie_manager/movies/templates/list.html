@@ -4,57 +4,134 @@
   <meta charset="UTF-8" />
   <title>Data Table</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal:target {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      width: 80%;
+      max-width: 500px;
+    }
+  </style>
 </head>
 <body class="p-10">
-   <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Movie</title>
-</head>
-<body>
-    
+  <p class="mb-4 text-center">
 
- <p class="mb-4 text-center">
-      <a href="{% url 'create' %}" class="text-blue-600 hover:underline">back to form</a>
-    </p>
+    <a href="{% url 'create' %}" class="text-blue-600 hover:underline">back to form</a>
+  </p>
   <div class="container mx-auto">
     <h1 class="text-2xl font-bold mb-6">User Table</h1>
 
+       <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  "> <a href="#modal-add" >Add</a></button>
+  
     <div class="overflow-x-auto">
       <table class="min-w-full border border-gray-300 bg-white rounded-lg shadow-md">
         <thead class="bg-gray-200">
-          <tr>
+          <tr class="uppercase">
+            
+            <th class="py-3 px-4 text-left">title</th>
             <th class="py-3 px-4 text-left">year</th>
-            <th class="py-3 px-4 text-left">Name</th>
             <th class="py-3 px-4 text-left">discription</th>
             <th class="py-3 px-4 text-left">edit</th>
             <th class="py-3 px-4 text-left">delete</th>
-            <th class="py-3 px-4 text-left">add</th>
-            
-            
+           
           </tr>
         </thead>
         <tbody>
-            {% for data in movie%}
+          {% for data in movie%}
           <tr class="border-t">
-            <td class="py-3 px-4">{{data.year}}</td>
-            <td class="py-3 px-4">{{data.title}}</td>
-           
-            <td class="py-3 px-4">{{data.description}}</td>
-            <td class="py-3 px-4"><button  type="button"   data-toggle="modal" data-target="#myModal">edit</button></td>
-            <td class="py-3 px-4"><a href="{% url 'delete' data.id %}">delete</a></td>
-            <td class="py-3 px-4"><a href="">add</a></td>
             
-             
+            <td class="py-3 px-4">{{data.title}}</td>
+            <td class="py-3 px-4">{{data.year}}</td>
+            <td class="py-3 px-4">{{data.description}}</td>
+            <td class="py-3 px-4">
+               <button type="button" class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  "><a href="#modal-edit-{{data.id}}" >Edit</a></button>
+              
+              <!-- Edit Modal -->
+              <div id="modal-edit-{{data.id}}" class="modal">
+                <div class="modal-content">
+                  <a href="#" class="float-right text-xl">&times;</a>
+                  <h2 class="text-xl font-bold mb-4">Edit Movie</h2>
+                  <form method="POST" action="{% url 'edit' data %}">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="title">Title</label>
+                      <input type="text" name="title" id="title" value="{{data.title}}" 
+                             class="w-full px-3 py-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="year">Year</label>
+                      <input type="text" name="year" id="year" value="{{data.year}}" 
+                             class="w-full px-3 py-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="description">Description</label>
+                      <textarea name="description" id="description" 
+                                class="w-full px-3 py-2 border rounded">{{data.description}}</textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                      Save Changes
+                    </button>
+                    <a href="#" class="ml-4 text-gray-600 hover:underline">Cancel</a>
+                  </form>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4">
+               <button type="button" class="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  "><a href="{% url 'delete' data.id %}" >Delete</a></button>
+            </td>
+           
           </tr>
           {% endfor%}
-          <!-- Add more rows as needed -->
         </tbody>
       </table>
     </div>
   </div>
-{% include 'edit.html'%}
-  
+
+
+   <div id="modal-add" class="modal">
+                <div class="modal-content">
+                  <a href="#" class="float-right text-xl">&times;</a>
+                  <h2 class="text-xl font-bold mb-4">Add Movie</h2>
+                  <form method="POST" action="{% url 'create' %}">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="title">Title</label>
+                      <input type="text" name="title" id="title" value="{{data.title}}" 
+                             class="w-full px-3 py-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="year">Year</label>
+                      <input type="text" name="year" id="year" value="{{data.year}}" 
+                             class="w-full px-3 py-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                      <label class="block text-gray-700 mb-2" for="description">Description</label>
+                      <textarea name="description" id="description" 
+                                class="w-full px-3 py-2 border rounded">{{data.description}}</textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                      Add
+                    </button>
+                    <a href="#" class="ml-4 text-gray-600 hover:underline">Cancel</a>
+                  </form>
+                </div>
+              </div>
 </body>
 </html>
