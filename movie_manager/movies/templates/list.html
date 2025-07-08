@@ -38,8 +38,15 @@
   <div class="container mx-auto">
     <h1 class="text-2xl font-bold mb-6">User Table</h1>
 
-       <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  "> <a href="#modal-add" >Add</a></button>
-  
+      <div class="flex justify-between">
+    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <a href="#modal-add">Add</a>
+    </button>
+
+    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <a href="#modal-upload">Upload</a>
+    </button>
+    </div>
     <div class="overflow-x-auto">
       <table class="min-w-full border border-gray-300 bg-white rounded-lg shadow-md">
         <thead class="bg-gray-200">
@@ -68,7 +75,7 @@
                 <div class="modal-content">
                   <a href="#" class="float-right text-xl">&times;</a>
                   <h2 class="text-xl font-bold mb-4">Edit Movie</h2>
-                  <form method="POST" action="{% url 'edit' data %}">
+                  <form method="POST" action="{% url 'edit' data.id %}">
                     {% csrf_token %}
                     <div class="mb-4">
                       <label class="block text-gray-700 mb-2" for="title">Title</label>
@@ -133,5 +140,19 @@
                   </form>
                 </div>
               </div>
+
+
+             <div id="modal-upload" class="modal">
+  <div class="modal-content">
+    <h2>Upload Excel File</h2>
+    <form method="POST" action="{% url 'import' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="myfile">
+      <button type="submit">Upload</button>
+      <a href="#" class="ml-4 text-gray-600 hover:underline">Cancel</a>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>

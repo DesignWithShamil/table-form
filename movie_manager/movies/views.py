@@ -2,7 +2,8 @@
 from django.shortcuts import render
 from . models import movieinfo
 from . form import movieForm
-
+from .resources import MovieInfoResource
+from tablib import Dataset
 
 
 def create(request):
@@ -57,3 +58,28 @@ def add(request):
         
     movieSet=movieinfo.objects.all()
     return render(request, 'list.html', {'movie':movieSet})
+
+# def impor(request):
+#     if request.method == "POST":
+#         movieinfo=MovieInfoResource()
+#         dataset=dataset()
+#         update=request.files['myfile']
+#         fulldata=dataset.load(update.read())
+#     return render(request, 'edit.html')
+
+
+def impor(request):
+    if request.method == "POST":
+        movieinfo_resource = MovieInfoResource()
+        dataset = Dataset()
+
+        new_file = request.FILES['myfile']
+        imported_data = dataset.load(new_file.read(), format='xlsx')
+
+        result = movieinfo_resource.import_data(dataset, dry_run=True)
+
+        if not result.has_errors():
+            movieinfo_resource.import_data(dataset, dry_run=False)
+
+    movieSet = movieinfo.objects.all()
+    return render(request, 'list.html', {'movie': movieSet})
