@@ -142,14 +142,27 @@
               </div>
 
 
-             <div id="modal-upload" class="modal">
-  <div class="modal-content">
-    <h2>Upload Excel File</h2>
+             
+
+<div id="modal-upload" class=" modal  fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <h2 class="text-xl font-bold mb-4 text-center">EXCEL UPLOAD</h2>
+
     <form method="POST" action="{% url 'import' %}" enctype="multipart/form-data">
       {% csrf_token %}
-      <input type="file" name="myfile">
-      <button type="submit">Upload</button>
-      <a href="#" class="ml-4 text-gray-600 hover:underline">Cancel</a>
+
+      <div class="mb-4">
+        <input type="file" name="myfile" class="block w-full text-sm text-gray-700">
+      </div>
+
+    
+
+      <div class="flex justify-end space-x-2">
+       <button type="submit">Upload</button>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          UPLOAD
+        </button>
+      </div>
     </form>
   </div>
 </div>
