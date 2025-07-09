@@ -8,5 +8,6 @@ urlpatterns = [
     path('add', views.add, name='add'),
     path('edit/<pk>', views.edit, name='edit'),
     path('delete/<pk>', views.delete, name='delete'),
-   path('import/', views.impor, name='import'),
+    path('import/', views.impor, name='import'),
+    path('export/', views.export_movieinfo, name='export_movieinfo'),
 ]

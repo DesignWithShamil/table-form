@@ -39,8 +39,11 @@
     <h1 class="text-2xl font-bold mb-6">User Table</h1>
 
       <div class="flex justify-between">
-    <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    <button type="button" class="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
       <a href="#modal-add">Add</a>
+    </button>
+    
+     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"><a href="#modal-download">Download</a>
     </button>
 
     <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -167,5 +170,31 @@
   </div>
 </div>
 
+<div id="modal-download"
+     class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50 target:flex">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <h2 class="text-xl font-bold mb-4 text-center">Download</h2>
+
+    <form method="GET" action="{% url 'export_movieinfo' %}">
+      <label class="block mb-2 font-medium">Select format:</label>
+      <select name="format" class="w-full border rounded px-3 py-2 mb-4">
+        <option value="csv">CSV</option>
+        <option value="xlsx">Excel (XLSX)</option>
+        <option value="pdf">PDF</option>
+        <option value="json">JSON</option>
+      </select>
+
+      <div class="flex justify-end space-x-2">
+       
+        <a href="#" class="text-gray-600 hover:underline">Cancel</a>
+
+        <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Download
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 </body>
 </html>
