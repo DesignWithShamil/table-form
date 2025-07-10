@@ -1,4 +1,4 @@
-
+from django.contrib import messages
 from django.shortcuts import render
 from . models import movieinfo
 from . form import movieForm
@@ -9,19 +9,36 @@ from io import BytesIO
 from xhtml2pdf import pisa
 from django.http import HttpResponse
 
-
 def create(request):
-    frm=movieForm()
-    if request.method == "POST":  # Always better than just `if request.POST`
-        title = request.POST.get('title')
-        year = request.POST.get('year')
-        desc = request.POST.get('description')
+    frm = movieForm()
 
-        movie_obj = movieinfo(title=title, year=year, description=desc)
-        movie_obj.save()
-        movieSet=movieinfo.objects.all()
-        return render(request, 'list.html', {'movie':movieSet})
-    return render(request, 'index.html',{'frm':frm})
+    if request.method == "POST":
+        title = request.POST.get('title', '').strip().upper()
+        year = int(request.POST.get('year'))
+        description = request.POST.get('description', '').strip().upper()
+
+        exists = movieinfo.objects.filter(
+            title=title,
+            year=year,
+            description=description
+        ).exists()
+
+        if exists:
+            messages.error(request, " This movie already exists!")
+        else:
+            movieinfo.objects.create(
+                title=title,
+                year=year,
+                description=description
+            )
+            messages.success(request, " Movie added successfully!")
+
+        
+        movieSet = movieinfo.objects.all()
+        return render(request, 'list.html', {'movie': movieSet})
+
+    return render(request, 'index.html', {'frm': frm})
+
 
 def list(request):
     movie_set = movieinfo.objects.all() 
@@ -32,14 +49,24 @@ def list(request):
 def edit (request,pk):
     instance=movieinfo.objects.get(pk=pk)
     print(instance)
-    if request.method == "POST":  # Always better than just `if request.POST`
-        title = request.POST.get('title')
+    if request.method == "POST":  
+        title = request.POST.get('title').strip().upper()
         year = request.POST.get('year')
-        desc = request.POST.get('description')
+        desc = request.POST.get('description').strip().upper()
+        exists = movieinfo.objects.filter(
+            title=title,
+            year=year,
+            description=desc
+        ).exists()
+        if exists:
+            messages.error(request, " This movie details already exists!")
+        else:
+            messages.success(request, " Movie edit successfully!")
         instance.title=title
         instance.year=year
         instance.description=desc
         instance.save()
+        
         instance=movieinfo.objects.all() 
         return render(request, 'list.html',{'movie':instance})
     
@@ -50,18 +77,6 @@ def delete(request,pk):
     return render(request, 'list.html', {'movie': movie_set})
 
 
-def add(request):
-   
-    if request.method == "POST":  # Always better than just `if request.POST`
-        title = request.POST.get('title')
-        year = request.POST.get('year')
-        desc = request.POST.get('description')
-
-        movie_obj = movieinfo(title=title, year=year, description=desc)
-        movie_obj.save()
-        
-    movieSet=movieinfo.objects.all()
-    return render(request, 'list.html', {'movie':movieSet})
 
 # def impor(request):
 #     if request.method == "POST":
@@ -94,21 +109,29 @@ def add(request):
 def impor(request):
     if request.method == "POST":
         new_file = request.FILES['myfile']
-
-      
         df = pd.read_excel(new_file)
 
-       
         for _, row in df.iterrows():
-            movieinfo.objects.create(
-                title = row['title'],
-                year = row['year'],
-                description = row['description']
-            )
+            title = str(row['title']).strip().upper()
+            year = int(row['year'])
+            description = str(row['description']).strip().upper()
+
+           
+            exists = movieinfo.objects.filter(
+                title=title,
+                year=year,
+                description=description
+            ).exists()
+
+            if not exists:
+                movieinfo.objects.create(
+                    title=title,
+                    year=year,
+                    description=description
+                )
 
     movieSet = movieinfo.objects.all()
     return render(request, 'list.html', {'movie': movieSet})
-
 
 def export_movieinfo(request):
     format = request.GET.get('format', 'csv') 

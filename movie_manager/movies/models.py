@@ -5,3 +5,6 @@ class movieinfo (models.Model):
     title=models.CharField(max_length=250)
     year=models.IntegerField(null=True)
     description=models.TextField()
+
+class Meta:
+        unique_together = ('title', 'year', 'description')

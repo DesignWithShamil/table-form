@@ -31,14 +31,12 @@
   </style>
 </head>
 <body class="p-10">
-  <p class="mb-4 text-center">
-
-    <a href="{% url 'create' %}" class="text-blue-600 hover:underline">back to form</a>
-  </p>
-  <div class="container mx-auto">
+  
+  
+  <div class="container mx-auto ">
     <h1 class="text-2xl font-bold mb-6">User Table</h1>
 
-      <div class="flex justify-between">
+      <div class="flex justify-between p-5">
     <button type="button" class="bg-green-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
       <a href="#modal-add">Add</a>
     </button>
@@ -73,7 +71,7 @@
             <td class="py-3 px-4">
                <button type="button" class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  "><a href="#modal-edit-{{data.id}}" >Edit</a></button>
               
-              <!-- Edit Modal -->
+             
               <div id="modal-edit-{{data.id}}" class="modal">
                 <div class="modal-content">
                   <a href="#" class="float-right text-xl">&times;</a>
@@ -113,7 +111,10 @@
       </table>
     </div>
   </div>
-
+<div class=" flex justify-center p-10">
+    <button type="button" class="bg-red-600 hover:bg-blue-700  font-bold py-2 px-4 rounded">
+      <a href="{% url 'create' %}" class=" hover:underline">back to form</a>
+    </button> </div>
 
    <div id="modal-add" class="modal">
                 <div class="modal-content">
@@ -197,4 +198,20 @@
   </div>
 </div>
 </body>
+{% if messages %}
+  <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center">
+      {% for message in messages %}
+        <p class="mb-4 
+          {% if message.tags == 'error' %} text-red-600 {% elif message.tags == 'success' %} text-green-600 {% endif %}">
+          {{ message }}
+        </p>
+      {% endfor %}
+      <button onclick="document.getElementById('messageModal').style.display='none';"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Close
+      </button>
+    </div>
+  </div>
+{% endif %}
 </html>
