@@ -111,25 +111,36 @@ def impor(request):
         new_file = request.FILES['myfile']
         df = pd.read_excel(new_file)
 
+        added = 0
+        skipped = 0
+
         for _, row in df.iterrows():
             title = str(row['title']).strip().upper()
             year = int(row['year'])
             description = str(row['description']).strip().upper()
 
-           
             exists = movieinfo.objects.filter(
                 title=title,
                 year=year,
-                description=description
+                description=description,
+                
             ).exists()
 
-            if not exists:
+            if exists:
+                skipped += 1
+            else:
                 movieinfo.objects.create(
                     title=title,
                     year=year,
-                    description=description
+                    description=description,
+                    
                 )
+                added += 1
 
+        if added == 0:
+            messages.error(request, "This file already exists! Nothing new was uploaded.")
+        else:
+            messages.success(request, f"{added} rows uploaded successfully!")
     movieSet = movieinfo.objects.all()
     return render(request, 'list.html', {'movie': movieSet})
 
