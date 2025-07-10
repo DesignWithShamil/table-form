@@ -70,10 +70,14 @@ def edit (request,pk):
         instance=movieinfo.objects.all() 
         return render(request, 'list.html',{'movie':instance})
     
-def delete(request,pk):
-    instance=movieinfo.objects.get(pk=pk)
+       
+    
+def delete(request, pk):
+    instance = movieinfo.objects.get(pk=pk)
+    title = instance.title  
     instance.delete()
-    movie_set = movieinfo.objects.all() 
+    messages.success(request, f"Movie '{title}' deleted successfully.")
+    movie_set = movieinfo.objects.all()
     return render(request, 'list.html', {'movie': movie_set})
 
 
