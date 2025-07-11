@@ -20,7 +20,7 @@ def create(request):
         exists = movieinfo.objects.filter(
             title=title,
             year=year,
-            description=description
+           
         ).exists()
 
         if exists:
@@ -56,7 +56,7 @@ def edit (request,pk):
         exists = movieinfo.objects.filter(
             title=title,
             year=year,
-            description=desc
+           
         ).exists()
         if exists:
             messages.error(request, " This movie details already exists!")
@@ -126,7 +126,7 @@ def impor(request):
             exists = movieinfo.objects.filter(
                 title=title,
                 year=year,
-                description=description,
+               
                 
             ).exists()
 
